@@ -1,4 +1,4 @@
-package br.com.codenation.service;
+package br.com.codenation.central.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
