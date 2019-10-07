@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.codenation.central.controller.form.LogForm;
 import br.com.codenation.central.entity.Log;
+import br.com.codenation.central.entity.User;
 import br.com.codenation.central.repository.filter.LogFilter;
 import br.com.codenation.central.service.LogService;
 
@@ -59,8 +61,10 @@ public class LogController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Log> cadastrar(@RequestBody @Valid LogForm form,  UriComponentsBuilder uriBuilder){
+	public ResponseEntity<Log> cadastrar(@RequestBody @Valid LogForm form, @AuthenticationPrincipal User user,
+			UriComponentsBuilder uriBuilder){
 		Log log = form.converter();
+		log.setUser(user);
 		this.logService.toSave(log);
 		
 		URI location = uriBuilder.path("/logs/{id}")
