@@ -10,15 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import br.com.codenation.central.entity.Erro;
 import br.com.codenation.central.entity.ErroDeFormulario;
 import br.com.codenation.central.service.exception.LogNotFoundException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionHandlerConfig {
 	
 	@Autowired
@@ -28,12 +28,6 @@ public class ExceptionHandlerConfig {
 	public ResponseEntity<Erro> telefoneNaoEncontrado(LogNotFoundException ex) {
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Erro(ex.getMessage()));
-	}
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Erro> telefoneDuplicado(Exception ex){
-		
-		return ResponseEntity.badRequest().body(new Erro(ex.getMessage()));
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -52,6 +46,12 @@ public class ExceptionHandlerConfig {
 		
 		return dto;
 		
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Erro> telefoneDuplicado(Exception ex){
+		
+		return ResponseEntity.badRequest().body(new Erro(ex.getMessage()));
 	}
 	
 }
