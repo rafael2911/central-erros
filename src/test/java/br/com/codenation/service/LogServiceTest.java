@@ -1,0 +1,110 @@
+package br.com.codenation.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import br.com.codenation.central.entity.Log;
+import br.com.codenation.central.repository.LogRepository;
+import br.com.codenation.central.service.LogService;
+import br.com.codenation.central.service.LogServiceImpl;
+import br.com.codenation.central.service.exception.LogNotFoundException;
+
+@RunWith(SpringRunner.class)
+public class LogServiceTest {
+	
+	@MockBean
+	private LogRepository logRepository;
+	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+	
+	private LogService logService;
+	
+	private Log log;
+	
+	@Before
+	public void setUp() {
+		logService = new LogServiceImpl(logRepository);
+		
+		log = new Log();
+		log.setTitle("Teste log");
+		log.setDetails("Testando o registro de log");
+		log.setEnvironment("dev");
+		log.setLevel("error");
+		log.setSource("localhost");
+		
+		when(logRepository.findById(1L)).thenReturn(Optional.empty());
+	}
+	
+	@Test
+	public void shouldSaveLogToRepository() {
+		logService.toSave(log);
+		
+		verify(logRepository).save(log);
+	}
+	
+	@Test
+	public void shouldReturnLogById() {
+		when(logRepository.findById(1L)).thenReturn(Optional.of(log));
+		Log log = logService.findById(1L);
+		
+		verify(logRepository).findById(1L);
+		assertThat(log).isNotNull();
+		assertThat(log.getTitle()).isEqualTo(log.getTitle());
+		assertThat(log.getDetails()).isEqualTo(log.getDetails());
+		
+	}
+	
+	@Test
+	public void mustThrowExceptionForFeatureNotFound() {
+		expectedException.expect(LogNotFoundException.class);
+		expectedException.expectMessage("Log não encontrado para o id " + 1L);
+		
+		logService.findById(1L);
+	}
+	
+	@Test
+	public void shouldRemoveLogById() {
+		when(logRepository.findById(1L)).thenReturn(Optional.of(log));
+		logService.toRemove(1L);
+		
+		verify(logRepository).delete(log);
+	}
+	
+	@Test
+	public void mustReturnExceptionToRemoveLogNotFound() {
+		expectedException.expect(LogNotFoundException.class);
+		expectedException.expectMessage("Log não encontrado para o id " + 1L);
+		
+		logService.toRemove(1L);
+	}
+	
+	@Test
+	public void mustArchiveLogById() {
+		when(logRepository.findById(1L)).thenReturn(Optional.of(log));
+		Log logChanged = logService.toFile(1L);
+		
+		verify(logRepository).findById(1L);
+		assertThat(logChanged.isFiled()).isTrue();
+	}
+	
+	@Test
+	public void mustReturnExceptionToFileLogNotFound() {
+		expectedException.expect(LogNotFoundException.class);
+		expectedException.expectMessage("Log não encontrado para o id " + 1L);
+		
+		logService.toFile(1L);
+	}
+	
+}
