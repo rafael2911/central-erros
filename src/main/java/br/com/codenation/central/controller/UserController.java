@@ -1,4 +1,4 @@
-package br.com.codenation.central;
+package br.com.codenation.central.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
