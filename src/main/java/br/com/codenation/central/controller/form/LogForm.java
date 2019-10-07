@@ -1,13 +1,26 @@
 package br.com.codenation.central.controller.form;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import br.com.codenation.central.entity.Log;
 
 public class LogForm {
-
+	
+	@NotNull @NotEmpty @Size(min = 3)
 	private String environment;
+	
+	@NotNull @NotEmpty @Size(min = 3)
 	private String level;
+	
+	@NotNull @NotEmpty @Size(min = 3)
 	private String title;
+	
+	@NotNull @NotEmpty @Size(min = 3)
 	private String details;
+	
+	@NotNull @NotEmpty @Size(min = 3)
 	private String source;
 
 	public String getEnvironment() {

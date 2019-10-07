@@ -2,6 +2,8 @@ package br.com.codenation.central.controller;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +59,7 @@ public class LogController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Log> cadastrar(@RequestBody LogForm form, UriComponentsBuilder uriBuilder){
+	public ResponseEntity<Log> cadastrar(@RequestBody @Valid LogForm form,  UriComponentsBuilder uriBuilder){
 		Log log = form.converter();
 		this.logService.toSave(log);
 		
